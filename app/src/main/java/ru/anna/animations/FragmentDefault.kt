@@ -1,9 +1,12 @@
 package ru.anna.animations
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.transition.*
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
@@ -19,6 +22,14 @@ class FragmentDefault : Fragment(R.layout.default_fragment) {
 
     private val counter: AppCompatTextView
         get() = requireView().findViewById(R.id.counter)
+
+    private val transition = TransitionSet().apply {
+        duration = 180
+        ordering = TransitionSet.ORDERING_TOGETHER
+        addTransition(ChangeBounds())
+        addTransition(Fade())
+        addTransition(Rotate())
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,6 +92,29 @@ class FragmentDefault : Fragment(R.layout.default_fragment) {
 
         set.duration = 400L
         set.start()
+    }
+}
 
+class Rotate: Transition() {
+
+    override fun captureEndValues(transitionValues: TransitionValues?) {
+        captureValues(transitionValues)
+    }
+
+    override fun captureStartValues(transitionValues: TransitionValues?) {
+        captureValues(transitionValues)
+    }
+
+    private fun captureValues(transitionValues: TransitionValues?) {
+        if(transitionValues == null) return
+        transitionValues.values["sb:transition:rotation"] = transitionValues.view.rotation
+    }
+
+    override fun createAnimator(
+        sceneRoot: ViewGroup?,
+        startValues: TransitionValues?,
+        endValues: TransitionValues?
+    ): Animator? {
+       return null
     }
 }
